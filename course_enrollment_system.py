@@ -59,7 +59,7 @@ def exportCourseRoster(filename="course_roster.txt"):
     f = open(filename, "w")
     f.write(str(courses))
     f.close()
-    os.system("echo Course roster exported to: " + filename)
+    print("Course roster exported to:", filename)
 
 def getOpenCoursesSummary(courses):
     c = 0
