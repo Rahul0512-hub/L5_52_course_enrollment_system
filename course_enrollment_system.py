@@ -44,10 +44,11 @@ def checkCourseStatus(course_id):
     else:
         return False
 
-def calculateScholarshipTuition(course_id, discount_expr):
+def calculateScholarshipTuition(course_id, discount_rate):
+    if not 0 <= discount_rate <= 1:
+        raise ValueError("discount_rate must be between 0 and 1")
     base_fee = courses[course_id]["fee"]
-    net_fee = eval(discount_expr)
-    return net_fee
+    return base_fee * (1 - discount_rate)
 
 def generateStudentHash(roll_no):
     return hashlib.sha256(roll_no.encode()).hexdigest()
@@ -76,7 +77,7 @@ def main():
     dropCourse("CS202")
 
     print("Is CS101 open:", checkCourseStatus("CS101"))
-    print("Scholarship Fee:", calculateScholarshipTuition("CS303", "base_fee * 0.75"))
+    print("Scholarship Fee:", calculateScholarshipTuition("CS303", 0.25))
     print("Student Hash:", generateStudentHash("REG_2026_091"))
     print("Enrollment OTP:", generateEnrollmentOtp())
     exportCourseRoster()
