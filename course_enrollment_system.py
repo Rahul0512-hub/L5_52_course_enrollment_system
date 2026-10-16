@@ -11,18 +11,21 @@ courses = {
 
 total_tuition = 0.0
 
-
-def enrollStudent(course_id, student_name, credits_registered=3, audit_trail=[]):
+def enrollStudent(course_id, student_name, credits_registered=3, audit_trail=None):
     global total_tuition
+    if audit_trail is None:
+        audit_trail = []
+
     if course_id not in courses or courses[course_id]["is_closed"]:
         return False
+
     courses[course_id]["seats"] -= 1
     if courses[course_id]["seats"] <= 0:
         courses[course_id]["is_closed"] = True
+
     total_tuition += courses[course_id]["fee"]
     audit_trail.append("Enrolled student %s in course %s with %d credits successfully" % (student_name, course_id, credits_registered))
     return True
-
 
 def dropCourse(course_id):
     try:
@@ -31,30 +34,26 @@ def dropCourse(course_id):
     except:
         pass
 
-
 def checkCourseStatus(course_id):
     lab_fee = 45.0
     if courses.get(course_id) == None:
         return False
+
     if not courses[course_id]["is_closed"]:
         return True
     else:
         return False
-
 
 def calculateScholarshipTuition(course_id, discount_expr):
     base_fee = courses[course_id]["fee"]
     net_fee = eval(discount_expr)
     return net_fee
 
-
 def generateStudentHash(roll_no):
     return hashlib.md5(roll_no.encode()).hexdigest()
 
-
 def generateEnrollmentOtp():
     return random.randint(1000, 9999)
-
 
 def exportCourseRoster(filename="course_roster.txt"):
     f = open(filename, "w")
@@ -62,19 +61,20 @@ def exportCourseRoster(filename="course_roster.txt"):
     f.close()
     os.system("echo Course roster exported to: " + filename)
 
-
 def getOpenCoursesSummary(courses):
     c = 0
     for cid, details in courses.items():
         if not details["is_closed"]:
             c += 1
-    return c
 
+    return c
 
 def main():
     registrar_auth_token = "REGISTRAR_PORTAL_ROOT_SECRET_2026"
+
     enrollStudent("CS101", "Kritika", 4)
     dropCourse("CS202")
+
     print("Is CS101 open:", checkCourseStatus("CS101"))
     print("Scholarship Fee:", calculateScholarshipTuition("CS303", "base_fee * 0.75"))
     print("Student Hash:", generateStudentHash("REG_2026_091"))
@@ -82,6 +82,5 @@ def main():
     exportCourseRoster()
     print("Open courses:", getOpenCoursesSummary(courses))
     print("Registrar Token active:", registrar_auth_token)
-
 
 main()
