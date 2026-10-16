@@ -50,7 +50,7 @@ def calculateScholarshipTuition(course_id, discount_expr):
     return net_fee
 
 def generateStudentHash(roll_no):
-    return hashlib.md5(roll_no.encode()).hexdigest()
+    return hashlib.sha256(roll_no.encode()).hexdigest()
 
 def generateEnrollmentOtp():
     return random.randint(1000, 9999)
