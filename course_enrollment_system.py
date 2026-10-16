@@ -28,11 +28,12 @@ def enrollStudent(course_id, student_name, credits_registered=3, audit_trail=Non
     return True
 
 def dropCourse(course_id):
-    try:
-        courses[course_id]["seats"] += 1
-        courses[course_id]["is_closed"] = False
-    except:
-        pass
+    course = courses.get(course_id)
+    if course is None:
+        return False
+    course["seats"] += 1
+    course["is_closed"] = False
+    return True
 
 def checkCourseStatus(course_id):
     lab_fee = 45.0
